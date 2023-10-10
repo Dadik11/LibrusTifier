@@ -1,0 +1,42 @@
+num = document.getElementById('num');
+undernum = document.getElementById('undernum');
+
+target = [23, 5]
+
+function updateNum() {
+    fetch('/getnumber')
+    .then(response => response.text())
+    .then(data => {
+        num.innerHTML = data;
+    });
+}
+
+function update() {
+    const date = new Date();
+
+    let out = "Update o 18:00";
+    let seconds = 0;
+
+    if(date.getHours() == target[0] - 1 || date.getHours() == target[0]) {
+        if(date.getMinutes() == 13 || date.getMinutes() == 14) {
+            seconds = 30 - date.getSeconds();
+            if(seconds < 0) {
+                seconds += 60;
+            }
+            if((date.getMinutes() == 13 && date.getSeconds() < 31) || (date.getMinutes() == 14 && date.getSeconds() > 30)) {
+                undernum.innerHTML = "Update o 18:00";
+                return;
+            }
+            out = "Update za " + seconds;   
+            if(seconds == 0) {
+                updateNum();
+            }
+        }
+    }
+
+    undernum.innerHTML = out;
+}
+
+updateNum();
+update();
+setInterval(update, 500);

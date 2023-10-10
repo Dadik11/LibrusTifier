@@ -1,0 +1,12 @@
+{
+    "webhook_test_send": "sending test webhook...",
+    "number_info": "the lucky number is {}",
+    "number_refresh": "refreshing lucky number...",
+
+    "server_ok": "server is running on port {}...",
+    "lang_saved": "saved language choice",
+
+    "dc_webhook_sent": "discord webhook sent",
+    "custom_webhook_sent": "custom webhook sent",
+    "custom_webhook_error": "custom webhook ({}) doesn't respond"
+}

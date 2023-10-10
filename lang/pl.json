@@ -1,0 +1,12 @@
+{
+    "webhook_test_send": "wysyłanie testowego webhooka...",
+    "number_info": "numer to {}",
+    "number_refresh": "odświeżanie numerka...",
+
+    "server_ok": "serwer działa na porcie {}...",
+    "lang_saved": "zapisano język",
+
+    "dc_webhook_sent": "wysłano discord webhook",
+    "custom_webhook_sent": "wysłano customowy webhook",
+    "custom_webhook_error": "customowy webhook ({}) nie odpowiada"
+}
