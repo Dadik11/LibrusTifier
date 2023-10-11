@@ -66,9 +66,9 @@ function updatenum() {
   let client = new librus();
   client.authorize(config['librus_username'], config['librus_password']).then(function () {
     client.info.getLuckyNumber().then(data => {
-      wh.send(data);
       lang.okay('number_info', data);
       log(data);
+      wh.send(data);
       LUCKY_NUMBER = data;
     });
   })
