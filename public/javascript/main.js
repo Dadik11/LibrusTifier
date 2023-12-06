@@ -60,6 +60,10 @@ function update() {
     updateDate.setMinutes(0);
     updateDate.setSeconds(30);
 
+    if(date.getDay() <= 4 && date.getHours() == 18 && date.getMinutes() == 0 && date.getSeconds() == 30) {
+        updateNum();
+    }
+
     if(date > updateDate || date.getDay() > 5 && !doAnimate) {
         doAnimate = true;
         return;
@@ -73,5 +77,5 @@ function update() {
 
 updateNum();
 update();
-setInterval(update, 500);
+setInterval(update, 600);
 setInterval(animation, 50);
