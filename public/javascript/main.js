@@ -77,5 +77,5 @@ function update() {
 
 updateNum();
 update();
-setInterval(update, 600);
+setInterval(update, 10);
 setInterval(animation, 50);
