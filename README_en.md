@@ -1,5 +1,5 @@
 # LibrusTifier 🔔
-<img width=225 src="https://cdn.dadik.lol/librustifier/logo.png"> <br />
+<img width=225 src="https://github.com/Dadik11/LibrusTifier/blob/main/.github/logo.png"> <br />
 Is the lucky number enough to make one happy?
 
 ---
@@ -49,7 +49,7 @@ Is the lucky number enough to make one happy?
 ```
 
 This graphic depicts it beautifully ✨ <br />
-<img width=400 src="https://cdn.dadik.lol/librustifier/epic_explanation.png"> <br />
+<img width=400 src="https://github.com/Dadik11/LibrusTifier/blob/main/.github/real.png"> <br />
 A few words of explanation: <br />
 **webhook_url**: link to the [discord webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) <br />
 **num_img**: link to the big green center image <br />

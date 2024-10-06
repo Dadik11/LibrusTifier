@@ -1,6 +1,6 @@
 # LibrusTifier 🔔
 ##### English version of this README is avaliable [here](README_en.md) <br />
-<img width=225 src="https://cdn.dadik.lol/librustifier/logo.png"> <br />
+<img width=225 src="https://github.com/Dadik11/LibrusTifier/blob/main/.github/logo.png"> <br />
 Czy szczęśliwy numerek wystarczy, aby uczynić człowieka szczęśliwym?
 
 ---
@@ -50,7 +50,7 @@ Czy szczęśliwy numerek wystarczy, aby uczynić człowieka szczęśliwym?
 ```
 
 Przedstawia to pięknie ta grafika ✨ <br />
-<img width=400 src="https://cdn.dadik.lol/librustifier/epic_explanation.png"> <br />
+<img width=400 src="https://github.com/Dadik11/LibrusTifier/blob/main/.github/real.png"> <br />
 Kilka słów wyjaśnienia: <br />
 **webhook_url**: link do [webhooka discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) <br />
 **num_img**: link do dużych zielonych zdjęć <br />
