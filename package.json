@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "node init.js",
-    "config": "node init.js",
-    "test": "node webhook.js",
-    "start": "node ."
+    "install": "node src/init.js",
+    "config": "node src/init.js",
+    "test": "node src/webhook.js",
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
