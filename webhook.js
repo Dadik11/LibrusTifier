@@ -1,47 +1,57 @@
+const { WebhookClient, EmbedBuilder } = require('discord.js'); 
 const fs = require('fs');
-const request = require('request');
-const lang = require('./lang/lang.js');
+require('dotenv').config();
 
-const config = JSON.parse(fs.readFileSync('config/webhook.json', 'utf-8'));
+let names = fs.readFileSync('names.txt', 'utf-8').split('\n').map(line => line.trim()).filter(line => line.length > 3);
+let namesMap = {};
 
-const { Webhook, MessageBuilder } = require('discord-webhook-node');
-const hook = new Webhook(config['webhook_url']);
+names.forEach(line => {
+    let [key, val] = line.split(':').map(i => i.trim());
+    namesMap[key] = val;
+});
 
-function date() {
-    const date = new Date();
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+try {
+    var client = new WebhookClient({ 'url': process.env.discord_webhook_url });
+} catch(e) {
+    console.log('[!!!] invalid webhook url');
 }
 
-function send(data) {
-    /* discord */
-    const embed = new MessageBuilder()
-    .setAuthor(config['title'].replaceAll('{NUM}', data.toString()))
-    .setColor(config['color'])
-    .setThumbnail(config['thumbnail_img'])
-    .setImage(config['num_img'].replaceAll('{NUM}', (data <= config['max_num'] ? data.toString() : 'error')))
-    .setFooter('NumerTifier', config['footer_img'])
-    .setTimestamp();
 
-    if(config['field1']) {
-        embed.addField(config['field1'], config['field1_t'].replaceAll('{DATE}', date()));
-    }
+exports.send = (number) => {
+    let date = new Date(new Date().getTime() + 1000*60*60*24); // number is valid 1 day after generation
 
-    hook.send(embed);
-    lang.okay('dc_webhook_sent');
+    let style = Object.keys(process.env).filter(key => key.startsWith('wh_')).reduce((obj, key) => ({...obj, [key]: process.env[key]}), {});
 
-    /* custom */
-    if(config['custom']) {
-        request.get(config['custom'].replaceAll('{NUM}', data.toString()).replaceAll('localhost', '127.0.0.1'), {timeout: 3000}, (err, res, body) => {
-            if (err) {
-                lang.error('custom_webhook_error', config['custom'].replaceAll('{NUM}'));
-                return;
-            }
-            lang.okay('custom_webhook_sent');
-        });
-    }
+    Object.keys(style).forEach(key => {
+        style[key] = style[key]
+            .replaceAll('{number}', number)
+            .replaceAll('{valid}', date.toLocaleDateString(process.env.locale))
+            .replaceAll('{generated}', new Date().toLocaleDateString(process.env.locale))
+            .replaceAll('{name}', namesMap[number] ?? namesMap.unknown);
+    });
+
+    let embed = new EmbedBuilder()
+        .setTitle(style.wh_title)
+        .setImage(style.wh_image)
+        .setColor(style.wh_color)
+        .setFooter({'text': style.wh_footer})
+        .setTimestamp()
+    
+    Object.keys(style).filter(key => key.startsWith('wh_field_')).forEach(field => {
+        let idx = field.replace('wh_field_', '');
+        let value = style['wh_value_' + idx] ?? ' ';
+
+        embed.addFields([{'name': style[field], 'value': value !== '' ? value : ' ', 'inline': style['wh_fields_inline'] == 'true'}]);
+    });
+
+    client.send({embeds: [embed]}).then(() => {
+        console.log('[+] webhook sent successfully');
+    }).catch(e => {
+        console.error(e);
+        console.log('[!!!] encountered an issue while sending the webhook - double check the webhook styling in .env');
+    });
 }
 
-module.exports = { send };
+if(require.main === module) {
+    exports.send(String(Math.ceil(Math.random() * (names.length-1))));
+}

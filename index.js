@@ -1,80 +1,63 @@
-const express = require('express');
-const librus = require('librus-api');
+const Librus = require('librus-api');
 const fs = require('fs');
+require('dotenv').config();
 
 const wh = require('./webhook.js');
-const lang = require('./lang/lang.js');
-lang.init();
-
-if(process.argv[2] === 'test') {
-  lang.info('webhook_test_send');
-  wh.send(Math.floor(Math.random() * 50));
-  return;
-}
-
-const config = JSON.parse(fs.readFileSync('config/app.json', 'utf-8'));
-
-let client = new librus();
-client.authorize(config['librus_username'], config['librus_password']).then(function () {
-  client.info.getLuckyNumber().then(data => {
-    LUCKY_NUMBER = data;
-    lang.okay('number_info', data.toString());
-  });
-});
-
-const app = express();
-app.use(express.static('public'));
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/main.html');
-});
-
-app.get('/iframe', (req, res) => {
-  res.sendFile(__dirname + '/public/iframe.html');
-});
 
 var LUCKY_NUMBER = '0';
 
-app.get('/getnumber', (req, res) => {
-  res.status(200).send(LUCKY_NUMBER.toString());
-});
-
-
-setInterval(function() {
-  var date = new Date();
-  if(date.getHours() == 18 && date.getMinutes() == 0 && date.getSeconds() == 25 && date.getDay() != 6 && date.getDay() != 5) {
-    updatenum();
-  }
-}, 999);
-
 function log(num) {
-  const date = new Date();
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
-  var today = `[${day}/${month}/${year}]`;
-
-  console.log(today + ' ' + num.toString());
-  fs.appendFile('log.txt', today + " " + num.toString() + '\n', (err) => {
-    if(err) throw err;
-  });
+    let date = new Date().toLocaleDateString(process.env.locale);
+    console.log(`[${date}] ${num}\n`);
+    fs.appendFileSync('log.txt', `[${date}] ${num}`);
 }
 
-function updatenum() {
-  lang.info('number_refresh');
+let client = new Librus();
+client.authorize(process.env.librus_username, process.env.librus_password).then(async () => {
+    let num = await client.info.getLuckyNumber();
+    LUCKY_NUMBER = num;
 
-  let client = new librus();
-  client.authorize(config['librus_username'], config['librus_password']).then(function () {
-    client.info.getLuckyNumber().then(data => {
-      lang.okay('number_info', data);
-      log(data);
-      wh.send(data);
-      LUCKY_NUMBER = data;
-    });
-  })
-}
-
-if(config['port'] == 0) return;
-app.listen(config['port'], () => {
-  lang.okay('server_ok', config['port']);
+    console.log('[*] lucky number:', num);
+}).catch(() => {
+    console.log('[!] failed to login into librus! check the credentials');
 });
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function update() {
+    try {
+        await client.authorize(process.env.librus_username, process.env.librus_password);
+        for(let i = 0; i < 40; i++) {
+            let num = await client.info.getLuckyNumber();
+
+            if(num == LUCKY_NUMBER) {
+                process.stdout.write('.');
+                await sleep(2000);
+            } else {
+                console.log('');
+                log(num);
+                wh.send(num);
+                LUCKY_NUMBER = num;
+                return;
+            }
+        }
+
+        console.log('\n[!] the lucky number did not change');
+    } catch(e) {
+        console.error(e);
+        console.log('\n[!!!] encountered an issue while updating the number - better luck next time!');
+    }
+}
+
+// sunday-thursday at approximately 18:00:00
+function loop() {
+    let date = new Date();
+    if(date.getMinutes() == 0 && date.getHours() == 18 && date.getDay() !== 5 && date.getDay() !== 6) {
+        update();
+        setTimeout(loop, 120 * 1000);
+        return;
+    }
+
+    setTimeout(loop, 1 * 1000);
+}
+loop();
