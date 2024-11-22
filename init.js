@@ -54,7 +54,7 @@ async function main() {
 
     fs.writeFileSync('.env', example);
 
-    console.log('\n[+] done! to start librustifier, run "npm run"');
+    console.log('\n[+] done! to start librustifier, run "npm start"');
 }
 
 main();
