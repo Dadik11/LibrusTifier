@@ -2,6 +2,6 @@
 2: Barbara
 3: Cezary
 4: Dorota
-6: ...
+5: ...
 
 unknown: ?!?
