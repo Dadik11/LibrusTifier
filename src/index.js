@@ -62,7 +62,7 @@ async function update() {
 setInterval(() => {
     let date = new Date();
     
-    if(date.getMinutes() == 2 && date.getHours() == 18 && date.getDay() !== 5 && date.getDay() !== 6) {
+    if(date.getMinutes() == 0 && date.getHours() == 18 && date.getDay() !== 5 && date.getDay() !== 6) {
         update();
     }
 });
