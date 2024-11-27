@@ -65,4 +65,4 @@ setInterval(() => {
     if(date.getMinutes() == 0 && date.getHours() == 18 && date.getDay() !== 5 && date.getDay() !== 6) {
         update();
     }
-});
+}, 100);
