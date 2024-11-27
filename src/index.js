@@ -24,7 +24,14 @@ client.authorize(process.env.librus_username, process.env.librus_password).then(
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+let lastUpdate = 0;
+
 async function update() {
+    if(new Date().getTime() - lastUpdate < 1000*60*60) {
+        return;
+    }
+    lastUpdate = new Date().getTime();
+    
     try {
         await client.authorize(process.env.librus_username, process.env.librus_password);
         for(let i = 0; i < 40; i++) {
@@ -46,18 +53,16 @@ async function update() {
     } catch(e) {
         console.error(e);
         console.log('\n[!!!] encountered an issue while updating the number - better luck next time!');
+    } finally {
+        updating = false;
     }
 }
 
 // sunday-thursday at approximately 18:00:00
-function loop() {
+setInterval(() => {
     let date = new Date();
-    if(date.getMinutes() == 0 && date.getHours() == 18 && date.getDay() !== 5 && date.getDay() !== 6) {
+    
+    if(date.getMinutes() == 2 && date.getHours() == 18 && date.getDay() !== 5 && date.getDay() !== 6) {
         update();
-        setTimeout(loop, 120 * 1000);
-        return;
     }
-
-    setTimeout(loop, 1 * 1000);
-}
-loop();
+});
