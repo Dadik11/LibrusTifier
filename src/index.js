@@ -24,13 +24,13 @@ client.authorize(process.env.librus_username, process.env.librus_password).then(
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-let lastUpdate = 0;
+// let lastUpdate = 0;
 
 async function update() {
-    if(new Date().getTime() - lastUpdate < 1000*60*60) {
-        return;
-    }
-    lastUpdate = new Date().getTime();
+    // if(new Date().getTime() - lastUpdate < 1000*60*60) {
+    //     return;
+    // }
+    // lastUpdate = new Date().getTime();
     
     try {
         await client.authorize(process.env.librus_username, process.env.librus_password);
@@ -62,7 +62,7 @@ async function update() {
 setInterval(() => {
     let date = new Date();
     
-    if(date.getMinutes() == 0 && date.getHours() == 18 && date.getDay() !== 5 && date.getDay() !== 6) {
+    if(date.getMinutes() == 0 && date.getHours() == 18 && date.getSeconds() == 0 && date.getDay() !== 5 && date.getDay() !== 6) {
         update();
     }
-}, 100);
+}, 1000);
